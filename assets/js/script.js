@@ -1,3 +1,24 @@
+var apiKey = "db2030d1933619405c76aa6d3c7e9034";
+var searchBtn = $("#btn");
+var city = "";
+var apiCall = "api.openweathermap.org/data/2.5/weather?q={"+city+"}&appid={"+apiKey+"}";
+
+var getWeather = function() {
+    console.log("..getting weather..");
+};
+
+searchBtn.on("click", function(event) {
+    event.preventDefault();
+    var cityInput = $("#city-search").val(); //hmmm
+    console.log(cityInput);
+
+    if (cityInput) {
+        getWeather(cityInput);
+    } else {
+        alert("Please Enter a City");
+    }
+    
+});
 // GIVEN a weather dashboard with form inputs
 // WHEN I search for a city
 // THEN I am presented with current and future conditions for that city and that city is added to the search history
