@@ -1,19 +1,37 @@
 var apiKey = "db2030d1933619405c76aa6d3c7e9034";
 var searchBtn = $("#btn");
-var city = "";
-var apiCall = "api.openweathermap.org/data/2.5/weather?q={"+city+"}&appid={"+apiKey+"}";
 
-var getWeather = function() {
+var displayWeather = function() {
+    console.log("..displaying weather..");
+};
+
+var getWeather = function(city) {
     console.log("..getting weather..");
+    var apiCall = "api.openweathermap.org/data/2.5/weather?q={"+city+"}&appid={"+apiKey+"}";
+    console.log(apiCall);
+
+    fetch(apiCall)
+    .then(function(response) {
+        if (response.ok) {
+            response.json().then(function(data) {
+                displayWeather(data, city);
+            });
+        } else {
+            alert("Error: City Not Found");
+        }
+    })
+    .catch(function(error) {
+        alert("Unable to connect to Open Weather");
+    });
 };
 
 searchBtn.on("click", function(event) {
     event.preventDefault();
-    var cityInput = $("#city-search").val(); //hmmm
-    console.log(cityInput);
+    var city = $("#city-search").val(); //hmmm
+    console.log(city);
 
-    if (cityInput) {
-        getWeather(cityInput);
+    if (city) {
+        getWeather(city);
     } else {
         alert("Please Enter a City");
     }
