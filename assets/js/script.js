@@ -1,3 +1,6 @@
+// GIVEN a weather dashboard with form inputs
+// WHEN I search for a city
+
 var apiKey = "db2030d1933619405c76aa6d3c7e9034";
 var searchBtn = $("#btn");
 
@@ -7,7 +10,8 @@ var displayWeather = function() {
 
 var getWeather = function(city) {
     console.log("..getting weather..");
-    var apiCall = "api.openweathermap.org/data/2.5/weather?q={"+city+"}&appid={"+apiKey+"}";
+    //somethings wrong with apicall
+    var apiCall = "https://api.openweathermap.org/data/2.5/weather?q={"+city+"}&appid={"+apiKey+"}";
     console.log(apiCall);
 
     fetch(apiCall)
@@ -27,7 +31,7 @@ var getWeather = function(city) {
 
 searchBtn.on("click", function(event) {
     event.preventDefault();
-    var city = $("#city-search").val(); //hmmm
+    var city = $("#city-search").val().replace(/ /s, ""); //hmmm, regex to get rid of spaces
     console.log(city);
 
     if (city) {
@@ -37,8 +41,7 @@ searchBtn.on("click", function(event) {
     }
     
 });
-// GIVEN a weather dashboard with form inputs
-// WHEN I search for a city
+
 // THEN I am presented with current and future conditions for that city and that city is added to the search history
 // WHEN I view current weather conditions for that city
 // THEN I am presented with the city name, the date, an icon representation of weather conditions, the temperature, the humidity, the wind speed, and the UV index
