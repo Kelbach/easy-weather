@@ -1,23 +1,36 @@
 // GIVEN a weather dashboard with form inputs
 // WHEN I search for a city
 
-var apiKey = "db2030d1933619405c76aa6d3c7e9034";
+var apiKey = "ec563e39065a30ccacdb51c199d52f0e";
 var searchBtn = $("#btn");
 
-var displayWeather = function() {
+var displayWeather = function(data) {
     console.log("..displaying weather..");
+    var cWeatherTemp = "Temp: "+ Math.round((data.main.temp-273.15)*(9/5)+32)+"°F";
+    console.log(cWeatherTemp);
+
+    var cWeatherWindSpeed = data.wind.speed+" m/s";
+    var cWeatherWindDeg = data.wind.deg+"° clockwise of North";
+    var cWeatherWind = "Wind: "+cWeatherWindSpeed+", "+cWeatherWindDeg
+    console.log(cWeatherWind);
+
+    var cWeatherHumid = "Humidity: "+data.main.humidity+"%";
+    console.log(cWeatherHumid);
+    
+    $('#current').html("<ul><li>"+cWeatherTemp+"</li><li>"+cWeatherWind+"</li><li>"+cWeatherHumid+"</li></ul>");
 };
 
 var getWeather = function(city) {
     console.log("..getting weather..");
     //somethings wrong with apicall
-    var apiCall = "https://api.openweathermap.org/data/2.5/weather?q={"+city+"}&appid={"+apiKey+"}";
+    var apiCall = "https://api.openweathermap.org/data/2.5/weather?q="+city+"&appid="+apiKey;
     console.log(apiCall);
 
     fetch(apiCall)
     .then(function(response) {
         if (response.ok) {
             response.json().then(function(data) {
+                console.log(data);
                 displayWeather(data, city);
             });
         } else {
