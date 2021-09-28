@@ -6,24 +6,53 @@ var searchBtn = $("#btn");
 
 var displayWeather = function(data) {
     console.log("..displaying weather..");
-    var cWeatherTemp = "Temp: "+ Math.round((data.main.temp-273.15)*(9/5)+32)+"°F";
+    var cWeatherCloud = data.weather[0].description;
+    var cWeatherTemp = "Temp: "+ data.main.temp+"°F and "+cWeatherCloud;
     console.log(cWeatherTemp);
 
-    var cWeatherWindSpeed = data.wind.speed+" m/s";
-    var cWeatherWindDeg = data.wind.deg+"° clockwise of North";
-    var cWeatherWind = "Wind: "+cWeatherWindSpeed+", "+cWeatherWindDeg
+    var cWeatherWindSpeed = data.wind.speed+" mph";
+    var cWeatherWindDeg = data.wind.deg;
+    var cWeatherWindDir = "";
+
+    //simple function for changing angle into cardinal direction
+    var windDirection = (function(){
+        if (0<cWeatherWindDeg<22.5 || 337.5<cWeatherWindDeg<360) {
+            cWeatherWindDir = "N";
+        } if (22.5<cWeatherWindDeg<67.5) {
+            cWeatherWindDir = "NE";
+        } if (67.5<cWeatherWindDeg<112.5) {
+            cWeatherWindDir = "E";
+        } if (112.5<cWeatherWindDeg<157.5) {
+            cWeatherWindDir = "SE";
+        } if (157.5<cWeatherWindDeg<202.5) {
+            cWeatherWindDir = "S";
+        } if (202.5<cWeatherWindDeg<247.5) {
+            cWeatherWindDir = "SW";
+        } if (247.5<cWeatherWindDeg<292.5) {
+            cWeatherWindDir = "W";
+        } if (292.5<cWeatherWindDeg<337.5) {
+            cWeatherWindDir = "NW";
+        }
+    });
+    windDirection();
+
+    var cWeatherWind = "Wind: "+cWeatherWindSpeed+" from the "+cWeatherWindDir
     console.log(cWeatherWind);
 
     var cWeatherHumid = "Humidity: "+data.main.humidity+"%";
     console.log(cWeatherHumid);
+
+    //image for sky
+    var cWeatherCloudIcon = data.weather[0].icon;
     
+    //adds info to page. still need to add an icon
     $('#current').html("<ul><li>"+cWeatherTemp+"</li><li>"+cWeatherWind+"</li><li>"+cWeatherHumid+"</li></ul>");
+    $('#image').html("<img src='http://openweathermap.org/img/wn/"+cWeatherCloudIcon+"@4x.png' />");
 };
 
 var getWeather = function(city) {
     console.log("..getting weather..");
-    //somethings wrong with apicall
-    var apiCall = "https://api.openweathermap.org/data/2.5/weather?q="+city+"&appid="+apiKey;
+    var apiCall = "https://api.openweathermap.org/data/2.5/weather?q="+city+"&appid="+apiKey+"&units=imperial";
     console.log(apiCall);
 
     fetch(apiCall)
@@ -44,7 +73,7 @@ var getWeather = function(city) {
 
 searchBtn.on("click", function(event) {
     event.preventDefault();
-    var city = $("#city-search").val().replace(/ /s, ""); //hmmm, regex to get rid of spaces
+    var city = $("#city-search").val().replace(/ /g, ""); //hmmm, regex to get rid of spaces
     console.log(city);
 
     if (city) {
