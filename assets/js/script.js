@@ -73,7 +73,7 @@ var getWeather = function(city) {
 
 searchBtn.on("click", function(event) {
     event.preventDefault();
-    var city = $("#city-search").val().replace(/ /g, ""); //hmmm, regex to get rid of spaces
+    var city = $("#city-search").val().replace(/ /g, "+"); //hmmm, regex to get rid of spaces
     console.log(city);
 
     if (city) {
