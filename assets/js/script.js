@@ -9,46 +9,34 @@ var cities = JSON.parse(localStorage.getItem('cities')) || [];
 $("document").ready(function() {
     for (var i = 0; i < cities.length; i++) {
         var searched = $("<div>").addClass("col-12");
-        var button = $("<button city='"+cities[i]+"'>").text(cities[i]);
+        var button = $("<button>").addClass("city").text(cities[i]);
         $("#searched").append(searched.append(button));
     }
-});
-
-
-//SDKFHKFDHSLKFHDSFHDFSKHDSKLHDFJSHKLJFDSKLFHJDSKLHJDFSKLHSD//
-$("#city").on("click", function(event) {
-    event.preventDefault();
-    var city = $(this).val();
-    console.log(city);
-
-    // if (city) {
-    //     if(cities.indexOf(city) === -1) {
-    //         cities.push(city);
-    //         localStorage.setItem('cities', JSON.stringify(cities));
-    //         console.log(cities);
-    //         var searched = $("<div>").addClass("col-12");
-    //         var button = $("<button id='prev-btn'>").text(city);
-    //         $("#searched").append(searched.append(button));
-    //     }
-    //     $("#dash-title").text("Your Weather Dashboard for "+city);
-    //     getWeather(city);
-
-    // } else {
-    //     alert("Please Enter a City");
-    // }
+    $(".city").on("click", function(event) {
+        event.preventDefault();
+        var city = $(this).text();
+        console.log(city);
     
-});
-
-
-
-// var cityButtonHandler = function (event) {
+        if (city) {
+            if(cities.indexOf(city) === -1) {
+                cities.push(city);
+                localStorage.setItem('cities', JSON.stringify(cities));
+                console.log(cities);
+                var searched = $("<div>").addClass("col-12");
+                var button = $("<button id='prev-btn'>").text(city);
+                $("#searched").append(searched.append(button));
+            }
+            $("#dash-title").text("Your Weather Dashboard for "+city);
+            getWeather(city);
     
-//     var cityEl = event.target;
-//     var cityName = cityEl.textContent;
-//     getLatAndLon(cityName);
-// };
-// savedCityButtonsEl.addEventListener("click", cityButtonHandler);
+        } else {
+            alert("Please Enter a City");
+        }
+        
+    });
 
+
+});
 
 var displayWeather = function(data) {
     $("#current").html("");
@@ -184,7 +172,7 @@ var displayFive = function(data) {
         //.html("<h4>"+date+"</h4><ul><li class='list-group-item'>"+fWeatherTemp+"</li><li class='list-group-item'>"+fWeatherWind+"</li><li class='list-group-item'>"+fWeatherHumid+"</li></ul>");
         var cardTitle = $("<h4>").text(date);
         var uvF = Math.floor(day.uvi);
-        var uvFuture = $("<li>").addClass("list-group-item 'uv-"+uvF+"'").text("UV Index: "+ day.uvi);    
+        var uvFuture = $("<li>").addClass("list-group-item uv-"+uvF).text("UV Index: "+ day.uvi);    
         var ulist = $("<ul>").addClass("list-group");
         var listTemp = $("<li id='temp'>").addClass("list-group-item").text(fWeatherTemp);
         var listWind = $("<li>").addClass("list-group-item").text(fWeatherWind);
@@ -195,7 +183,7 @@ var displayFive = function(data) {
     }
     //generate uv index for current day
     var uvF = Math.floor(data.current.uvi);
-    var uvCurrent = $("<li>").addClass("list-group-item 'uv-"+uvF+"'").text("UV Index: "+data.current.uvi);
+    var uvCurrent = $("<li>").addClass("list-group-item uv-"+uvF).text("UV Index: "+data.current.uvi);
     $("#current ul").append(uvCurrent);
 };
 
