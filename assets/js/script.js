@@ -6,46 +6,32 @@ var searchBtn = $("#btn");
 
 var cities = JSON.parse(localStorage.getItem('cities')) || [];
 
-$("document").ready(function() {
+var docReady = (function() {
+    $("#searched").html("");
     for (var i = 0; i < cities.length; i++) {
         var searched = $("<div>").addClass("col-12");
         var button = $("<button>").addClass("city").text(cities[i]);
         $("#searched").append(searched.append(button));
     }
     $(".city").on("click", function(event) {
-        event.preventDefault();
+        // event.preventDefault();
         var city = $(this).text();
         console.log(city);
-    
-        if (city) {
-            if(cities.indexOf(city) === -1) {
-                cities.push(city);
-                localStorage.setItem('cities', JSON.stringify(cities));
-                console.log(cities);
-                var searched = $("<div>").addClass("col-12");
-                var button = $("<button id='prev-btn'>").text(city);
-                $("#searched").append(searched.append(button));
-            }
-            $("#dash-title").text("Your Weather Dashboard for "+city);
-            getWeather(city);
-    
-        } else {
-            alert("Please Enter a City");
-        }
-        
+
+        $("#dash-title").text("Your Weather Dashboard for "+city);
+        getWeather(city);
+ 
     });
-
-
 });
 
 var displayWeather = function(data) {
     $("#current").html("");
     console.log("..displaying weather..");
     var date = moment.unix(data.dt).format("dddd, MMMM Do, YYYY");
-    console.log(date);
+    // console.log(date);
     var cWeatherCloud = data.weather[0].description;
     var cWeatherTemp = "Temp: "+ data.main.temp+"°F and "+cWeatherCloud;
-    console.log(cWeatherTemp);
+    // console.log(cWeatherTemp);
 
     var cWeatherWindSpeed = data.wind.speed+" mph";
     var cWeatherWindDeg = data.wind.deg;
@@ -74,10 +60,10 @@ var displayWeather = function(data) {
     windDirection();
 
     var cWeatherWind = "Wind: "+cWeatherWindSpeed+" from the "+cWeatherWindDir
-    console.log(cWeatherWind);
+    // console.log(cWeatherWind);
 
     var cWeatherHumid = "Humidity: "+data.main.humidity+"%";
-    console.log(cWeatherHumid);
+    // console.log(cWeatherHumid);
 
     //image for sky
     var cWeatherCloudIcon = data.weather[0].icon;
@@ -103,7 +89,7 @@ var displayWeather = function(data) {
 var getFive = function( x , y ) {
     console.log("..getting future weather for lat: "+x+", lon: "+y);
     var apiFCall = "https://api.openweathermap.org/data/2.5/onecall?lat="+x+"&lon="+y+"&exclude={"+"}&appid="+apiKey+"&units=imperial";
-    console.log(apiFCall);
+    // console.log(apiFCall);
 
     fetch(apiFCall)
     .then(function(response) {
@@ -127,10 +113,10 @@ var displayFive = function(data) {
     for (var i = 1; i < 6 ; i++) {
         var day = data.daily[i];
         var date = moment.unix(day.dt).format("dddd, Do");
-        console.log("/////////"+date+"/////////");
+        // console.log("/////////"+date+"/////////");
 
         var fWeatherTemp = "Low: "+ day.temp.min+"°F, High: "+day.temp.max+"°F";
-        console.log(fWeatherTemp);
+        // console.log(fWeatherTemp);
 
         var fWeatherWindSpeed = day.wind_speed+" mph";
         var fWeatherWindDeg = day.wind_deg;
@@ -159,10 +145,10 @@ var displayFive = function(data) {
         windDirection();
 
         var fWeatherWind = "Wind: "+fWeatherWindSpeed+" "+fWeatherWindDir;
-        console.log(fWeatherWind);
+        // console.log(fWeatherWind);
 
         var fWeatherHumid = "Humidity: "+day.humidity+"%";
-        console.log(fWeatherHumid);
+        // console.log(fWeatherHumid);
 
         //image for sky
         var fWeatherCloudIcon = day.weather[0].icon;
@@ -190,13 +176,23 @@ var displayFive = function(data) {
 var getWeather = function(city) {
     console.log("..getting current weather..");
     var apiCCall = "https://api.openweathermap.org/data/2.5/weather?q="+city+"&appid="+apiKey+"&units=imperial";
-    console.log(apiCCall);
+    // console.log(apiCCall);
 
     fetch(apiCCall)
     .then(function(response) {
         if (response.ok) {
             response.json().then(function(data) {
                 console.log(data);
+                if(cities.indexOf(city) === -1) {
+                    cities.push(city);
+                    localStorage.setItem('cities', JSON.stringify(cities));
+                    // console.log(cities);
+                    // var searched = $("<div>").addClass("col-12");
+                    // var button = $("<button>").addClass("city").text(city);
+                    // $("#searched").append(searched.append(button));
+                    docReady();
+                }
+                $("#dash-title").text("Your Weather Dashboard for "+city);          
                 displayWeather(data, city);
             });
         } else {
@@ -212,21 +208,13 @@ searchBtn.on("click", function(event) {
     event.preventDefault();
     var city = $("#city-search").val().replace(/ /g, "+"); //hmmm, regex to get rid of spaces
     console.log(city);
-
+    
     if (city) {
-        if(cities.indexOf(city) === -1) {
-            cities.push(city);
-            localStorage.setItem('cities', JSON.stringify(cities));
-            console.log(cities);
-            var searched = $("<div>").addClass("col-12");
-            var button = $("<button id='prev-btn' city='"+city+"'>").text(city);
-            $("#searched").append(searched.append(button));
-        }
-        $("#dash-title").text("Your Weather Dashboard for "+city);
         getWeather(city);
-
     } else {
         alert("Please Enter a City");
     }
     
 });
+
+docReady();
