@@ -197,6 +197,15 @@ var getWeather = function(city) {
         if (response.ok) {
             response.json().then(function(data) {
                 console.log(data);
+                if(cities.indexOf(city) === -1) {
+                    cities.push(city);
+                    localStorage.setItem('cities', JSON.stringify(cities));
+                    console.log(cities);
+                    var searched = $("<div>").addClass("col-12");
+                    var button = $("<button id='prev-btn' city='"+city+"'>").text(city);
+                    $("#searched").append(searched.append(button));
+                }
+                $("#dash-title").text("Your Weather Dashboard for "+city);
                 displayWeather(data, city);
             });
         } else {
@@ -214,15 +223,6 @@ searchBtn.on("click", function(event) {
     console.log(city);
 
     if (city) {
-        if(cities.indexOf(city) === -1) {
-            cities.push(city);
-            localStorage.setItem('cities', JSON.stringify(cities));
-            console.log(cities);
-            var searched = $("<div>").addClass("col-12");
-            var button = $("<button id='prev-btn' city='"+city+"'>").text(city);
-            $("#searched").append(searched.append(button));
-        }
-        $("#dash-title").text("Your Weather Dashboard for "+city);
         getWeather(city);
 
     } else {
